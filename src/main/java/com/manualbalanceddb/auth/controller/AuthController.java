@@ -51,7 +51,7 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new AuthResponse("Invalid email or password", null, null));
         }
         String token = jwtUtil.generateToken(user.getEmail());
-        UserDto userDto = new UserDto(user.getId(), user.getName(),user.getEmail());
+        UserDto userDto = new UserDto(user.getId(), user.getName(),user.getEmail(), user.getCreatedDate());
         return ResponseEntity.ok(new AuthResponse("Login successfull", token, userDto));
     }
 
@@ -73,11 +73,12 @@ public class AuthController {
         user.setName(request.getName());
         user.setEmail(request.getEmail());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
+        user.setCreatedDate(request.getCreatedDate());
 
 
         userRepository.save(user);
         String token = jwtUtil.generateToken(user.getEmail());
-        UserDto userDto = new UserDto(user.getId(), user.getName() ,user.getEmail());
+        UserDto userDto = new UserDto(user.getId(), user.getName() ,user.getEmail(), user.getCreatedDate());
 
         return ResponseEntity.status(HttpStatus.CREATED).body(new AuthResponse("User registered successfully", token, userDto));
     }
