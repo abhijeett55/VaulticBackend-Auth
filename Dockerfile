@@ -1,7 +1,7 @@
 # Build
 FROM maven:3.9.9-eclipde-temurin-17 AS build
 WORKDIR /app
-COPY ..
+COPY . .
 RUN ./mvn clean package -DskipTests
 
 
