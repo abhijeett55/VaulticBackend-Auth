@@ -1,6 +1,9 @@
 package com.manualbalanceddb.auth.controller;
 
 import com.manualbalanceddb.auth.util.*;
+
+import jakarta.annotation.PostConstruct;
+
 import com.manualbalanceddb.auth.dto.*;
 import com.manualbalanceddb.auth.model.*;
 import com.manualbalanceddb.auth.respository.UserRepository;
@@ -13,11 +16,13 @@ import java.util.List;
 
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Component;
 @RestController
 @RequestMapping("/api/auth")
 
@@ -68,6 +73,8 @@ public class AuthController {
 
         return db;
     }
+
+    
 
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody RegisterRequest request) {       
