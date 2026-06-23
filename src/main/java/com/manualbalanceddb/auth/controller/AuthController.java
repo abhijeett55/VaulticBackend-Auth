@@ -2,7 +2,7 @@ package com.manualbalanceddb.auth.controller;
 
 import com.manualbalanceddb.auth.util.*;
 
-import jakarta.annotation.PostConstruct;
+
 
 import com.manualbalanceddb.auth.dto.*;
 import com.manualbalanceddb.auth.model.*;
@@ -22,7 +22,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Component;
+
 @RestController
 @RequestMapping("/api/auth")
 
@@ -58,6 +58,14 @@ public class AuthController {
         String token = jwtUtil.generateToken(user.getEmail());
         UserDto userDto = new UserDto(user.getId(), user.getName(),user.getEmail(), user.getCreatedDate());
         return ResponseEntity.ok(new AuthResponse("Login successfull", token, userDto));
+    }
+
+    @Value("${spring.data.mongodb.uri}")
+    private String springMongoUri;
+
+    @GetMapping("/check")
+    public String check() {
+        return springMongoUri;
     }
 
     
