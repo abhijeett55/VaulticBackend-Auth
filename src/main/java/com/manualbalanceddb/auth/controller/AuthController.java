@@ -2,7 +2,7 @@ package com.manualbalanceddb.auth.controller;
 
 import com.manualbalanceddb.auth.util.*;
 
-
+import jakarta.annotation.PostConstruct;
 
 import com.manualbalanceddb.auth.dto.*;
 import com.manualbalanceddb.auth.model.*;
@@ -61,26 +61,41 @@ public class AuthController {
     }
 
     @Value("${spring.data.mongodb.uri}")
-    private String springMongoUri;
+    private String mongoUri;
 
-    @GetMapping("/check")
-    public String check() {
-        return springMongoUri;
+    @Value("${spring.data.mongodb.uri}")
+    @PostConstruct
+    public void init() {
+        System.out.println("SPRING MONGO URI = " + mongoUri);
     }
+
+    @Value("${spring.data.mongodb.uri:NOT_FOUND}")
+    private String uri;
+
+    @GetMapping("/mongo-info")
+    public String mongoInfo() {
+        return uri;
+    }
+
+    @PostConstruct
+    public void printDb() {
+        System.out.println("DB = " + mongoTemplate.getDb().getName());
+    }
+
+    @PostConstruct
+    public void checkConnection() {
+        System.out.println("DB = " + mongoTemplate.getDb().getName());
+        System.out.println("COLLECTIONS = " + mongoTemplate.getDb().listCollectionNames());
+    }
+
+    @GetMapping("/db")
+    public String db() {
+        return mongoTemplate.getDb().getName();
+    }
+    
 
     
-    @GetMapping("/db")
-    public String dbName() {
-
-        String db =
-            mongoTemplate.getDb().getName();
-
-        System.out.println(
-            "DATABASE = " + db
-        );
-
-        return db;
-    }
+    
 
     
 
