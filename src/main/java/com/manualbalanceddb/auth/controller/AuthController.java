@@ -1,22 +1,14 @@
 package com.manualbalanceddb.auth.controller;
 
 import com.manualbalanceddb.auth.util.*;
-
-import jakarta.annotation.PostConstruct;
-
 import com.manualbalanceddb.auth.dto.*;
 import com.manualbalanceddb.auth.model.*;
 import com.manualbalanceddb.auth.respository.UserRepository;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.data.mongodb.core.MongoTemplate;
-import java.util.List;
-
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -29,19 +21,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 public class AuthController {
     @Autowired
     private UserRepository userRepository;
-
     @Autowired
     private PasswordEncoder passwordEncoder;
-
-    @Autowired
-    private MongoTemplate mongoTemplate;
-
     @Autowired
     private JwtUtil jwtUtil;
-    @GetMapping("/all")
-    public List<User> getAllUsers() {
-        return userRepository.findAll();
-    }
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest request) {
@@ -59,53 +42,17 @@ public class AuthController {
         UserDto userDto = new UserDto(user.getId(), user.getName(),user.getEmail(), user.getCreatedDate());
         return ResponseEntity.ok(new AuthResponse("Login successfull", token, userDto));
     }
-
-    @Value("${spring.data.mongodb.uri}")
-    private String mongoUri;
-
-    @Value("${spring.data.mongodb.uri}")
-    @PostConstruct
-    public void init() {
-        System.out.println("SPRING MONGO URI = " + mongoUri);
-    }
-
-    @Value("${spring.data.mongodb.uri:NOT_FOUND}")
-    private String uri;
-
-    @GetMapping("/mongo-info")
-    public String mongoInfo() {
-        return uri;
-    }
-
-    @PostConstruct
-    public void printDb() {
-        System.out.println("DB = " + mongoTemplate.getDb().getName());
-    }
-
-    @PostConstruct
-    public void checkConnection() {
-        System.out.println("DB = " + mongoTemplate.getDb().getName());
-        System.out.println("COLLECTIONS = " + mongoTemplate.getDb().listCollectionNames());
-    }
-
-    @GetMapping("/db")
-    public String db() {
-        return mongoTemplate.getDb().getName();
-    }
-    
-
-    
-    
-
     
 
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody RegisterRequest request) {       
-        Optional<User> existingUser = userRepository.findByEmail(request.getEmail());
-        if (existingUser.isPresent()) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(new AuthResponse("Email already registered", null, null));
+        
+        if(userRepository.existsEmail(request.getEmail())) {
+            return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body("Email Already Registered");
         }
+
 
     
         User user = new User();
