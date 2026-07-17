@@ -23,11 +23,11 @@ Login/Sign-up authentication system using **JWT (JSON Web Tokens)** on the backe
 ## Architecture Overview
 
 ```
-┌─────────────────┐        1. POST /auth/login          ┌──────────────────────┐
-│                  │ ───────────────────────────────────▶│                       │
+ ┌─────────────────┐        1. POST /auth/login            ┌──────────────────────┐
+│                  │ ───────────────────────────────────▶ │                      │
 │  Angular Client  │                                       │   Spring Boot API    │
-│  (localhost:4200)│ ◀─────────────────────────────────── │   Spring Security     │
-│                  │        2. { accessToken, ... }        │   + JWT Filter        │
+│  (localhost:4200)│ ◀─────────────────────────────────── │   Spring Security    │
+│                  │        2. { accessToken, ... }        │   + JWT Filter       │
 └──────┬───────────┘                                       └──────────┬───────────┘
        │                                                              │
        │  3. Subsequent requests:                                    │
@@ -35,8 +35,8 @@ Login/Sign-up authentication system using **JWT (JSON Web Tokens)** on the backe
        └──────────────────────────────────────────────────────────▶  │
                                                                        ▼
                                                               ┌─────────────────┐
-                                                              │   Database       │
-                                                              │  (Users table)   │
+                                                              │   Database      │
+                                                              │  (Users table)  │
                                                               └─────────────────┘
 ```
 
